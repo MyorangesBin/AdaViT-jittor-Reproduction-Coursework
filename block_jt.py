@@ -20,7 +20,6 @@ def gumble_sigmoid(logits, tau=1, hard=False, threshold=0.5, training=True):
 
 class SimpleTokenSelect(nn.Module):
     def __init__(self, dim_in, tau=3.0, is_hard=True, threshold=0.5):
-        # ★ tau 从 5.0 降到 3.0，sigmoid 更陡，选择更果断
         super().__init__()
         self.mlp_head  = nn.Linear(dim_in, 1)
         self.tau       = tau
@@ -45,7 +44,6 @@ class SimpleTokenSelect(nn.Module):
 
 class BlockHeadSelect(nn.Module):
     def __init__(self, dim_in, num_heads, tau=3.0, is_hard=True, threshold=0.5):
-        # ★ tau 从 5.0 降到 3.0
         super().__init__()
         self.mlp_head  = nn.Linear(dim_in, num_heads)
         self.tau       = tau
@@ -190,5 +188,6 @@ class StepAdaBlock(nn.Module):
         if token_sel is not None:
             mlp_x = mlp_x * token_sel.unsqueeze(-1)
         x = x + self.drop_path(mlp_x) * mlp_keep
+
 
         return x, attn_origin, head_sel, layer_sel, token_sel, head_logits, layer_logits
